@@ -1,14 +1,45 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+  DeploymentStage:
+    Type: String
+    Default: stage
+    AllowedValues:
+      - stage
+      - prod
+    Description: Stage to deploy to (stage or prod)
+  
+  LogLevel:
+    Type: String
+    Default: info
+    AllowedValues:
+      - debug
+      - info
+      - warn
+      - error
+    Description: Minimum log level for log messages
+
+Globals:
+  Function:
+    MemorySize: 128
+    Handler: bootstrap
+    Runtime: provided.al2
+    Timeout: 5
+    Environment:
+      Variables:
+        STAGE: !Ref DeploymentStage
+        LOG_LEVEL: !Ref LogLevel
+
 Resources:
-  LemmaPingFunction:
+  HttpApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref DeploymentStage
+
+  Ping:
     Type: AWS::Serverless::Function
     Properties:
-      MemorySize: 128
-      Handler: bootstrap
-      Runtime: provided.al2
-      Timeout: 5
       CodeUri: target/lambda/lemma_ping/
       Events:
         HttpGet:
@@ -16,8 +47,4 @@ Resources:
           Properties:
             Path: '/ping'
             Method: get
-
-Outputs:
-  FunctionName:
-    Value: !Ref LemmaPingFunction
-    Description: Function name of lambda function 'lemma_ping'
+            RestApiId: !Ref HttpApi
