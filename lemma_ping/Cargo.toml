@@ -4,6 +4,7 @@ version = "0.0.1"
 edition = "2021"
 
 [package.metadata.lambda.env]
+STAGE = "dev"
 LOG_LEVEL = "info"
 
 # Starting in Rust 1.62 you can use `cargo add` to add dependencies 
@@ -20,6 +21,7 @@ LOG_LEVEL = "info"
 [dependencies]
 lambda_http = "0.6.0"
 lambda_runtime = "0.6.0"
+lemma_config = { path = "../lemma_config" }
 tokio = { version = "1", features = ["macros"] }
 tracing = { version = "0.1", features = ["log"] }
 tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt"] }

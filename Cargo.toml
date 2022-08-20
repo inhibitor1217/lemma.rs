@@ -1,4 +1,5 @@
 [workspace]
 members = [
+  "lemma_config",
   "lemma_ping"
 ]
